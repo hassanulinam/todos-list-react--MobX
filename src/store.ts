@@ -1,49 +1,102 @@
-import { makeAutoObservable, runInAction } from "mobx";
+import { autorun, makeAutoObservable, runInAction } from "mobx";
 
-export interface Todo {
-  id: string | number;
-  text: string;
-  done: boolean;
+// ========================================================
+
+export class Todo {
+  done = false;
+
+  constructor(public id: number, public text: string) {
+    makeAutoObservable(this);
+  }
+
+  set changeDoneStatus(value: boolean) {
+    this.done = value;
+  }
 }
 
-const addTodo = (todos: Todo[], text: string, id: number | string): Todo[] => [
-  { id, text, done: false },
-  ...todos,
-];
+// ======================================================
 
-const removeTodo = (todos: Todo[], id: number | string): Todo[] =>
-  todos.filter((todo: Todo) => todo.id !== id);
+export const filterConst = {
+  completed: "completed",
+  pending: "pending",
+  all: "all",
+};
+
+// ======================================================
 
 class Store {
   todos: Todo[] = [];
   newTodo = "";
   n = 0;
+  activeFilter = filterConst.all;
+  loadedSampleData = false;
 
   constructor() {
-    makeAutoObservable(this);
+    makeAutoObservable(this, {}, { autoBind: true });
+  }
+
+  set changeFilter(value: string) {
+    this.activeFilter = value;
   }
 
   addTodo() {
-    this.todos = addTodo(this.todos, this.newTodo, ++this.n);
+    if (this.newTodo.trim() !== "")
+      this.todos.unshift(new Todo(++this.n, this.newTodo));
     this.newTodo = "";
   }
 
   removeTodo(id: number | string) {
-    this.todos = removeTodo(this.todos, id);
+    this.todos = this.todos.filter((t) => t.id !== id);
   }
 
-  load(url: string) {
-    fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
-        runInAction(() => {
-          this.todos = data;
-          this.n = this.todos.length;
-        });
-      });
+  *load(url: string) {
+    if (!this.loadedSampleData)
+      yield fetch(url)
+        .then((res) => res.json())
+        .then((data) =>
+          runInAction(() => {
+            this.todos.push(
+              ...data.map((t: Todo) => new Todo(++this.n, t.text))
+            );
+            this.n = this.todos.length;
+          })
+        );
+    this.loadedSampleData = true;
+  }
+
+  clearTodos() {
+    this.todos = [];
+    this.n = 0;
+    this.loadedSampleData = false;
+  }
+
+  get completedList() {
+    return this.todos.filter((t) => t.done);
+  }
+
+  get pendingList() {
+    return this.todos.filter((t) => !t.done);
+  }
+
+  get filteredTodoList() {
+    if (this.activeFilter === filterConst.completed) return this.completedList;
+    if (this.activeFilter === filterConst.pending) return this.pendingList;
+    return this.todos;
   }
 }
 
 const store = new Store();
+
+export const unsubscribdFilteredList = autorun(() => {
+  console.log("filering todos...", store.filteredTodoList);
+});
+
+export const unsubscribeCompletedList = autorun(() => {
+  console.log("watching completed list...", store.completedList);
+});
+
+export const unsubscribePendingList = autorun(() => {
+  console.log("watching pending list...", store.pendingList);
+});
 
 export default store;
