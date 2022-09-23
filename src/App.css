@@ -1,38 +1,94 @@
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  height: 100vh;
+  width: 100vw;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  transition: 0.3s;
+}
+button {
+  cursor: pointer;
+}
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.todo-item {
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(199, 199, 199, 0.082);
+  border: 1px solid rgba(128, 128, 128, 0.151);
+  border-radius: 8px;
+  padding: 16px;
+  min-width: 300px;
+  max-width: 500px;
+  margin: 8px 0;
+  transition: 0.3s;
+}
+
+.todo-item:hover {
+  background-color: rgba(143, 143, 143, 0.164);
+}
+
+.del-btn,
+.add-btn {
+  padding: 6px 16px;
+  border: 1px solid tomato;
+  font-weight: 600;
+  color: red;
+  align-self: center;
+  border-radius: 4px;
+  transition: 0.2s;
+}
+
+.del-btn:hover {
+  background-color: red;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.add-btn {
+  background-color: lightgreen;
+  color: black;
+  border: none;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.add-todo-container {
+  display: flex;
+  align-items: center;
+  max-width: 500px;
+  justify-content: center;
+  gap: 16px;
+  margin: 0 auto;
+  margin-top: 16px;
+  transition: 0.3s all;
+}
+
+.add-todo-input {
+  padding: 6px 10px;
+  background-color: rgba(220, 220, 220, 0.336);
+  border: 1px solid gray;
+  outline: none;
+  border-radius: 8px;
+  width: 300px;
+}
+
+.load-btn {
+  padding: 8px 12px;
+  margin-top: 20px;
+  border: none;
+  border-radius: 8px;
+  background-color: goldenrod;
+  transition: 0.3s;
+}
+
+.load-btn:hover {
+  background-color: rgb(255, 174, 0);
+  transform: scale(1.07);
+}
+
+.load-btn:active {
+  transform: scale(0.98);
 }
