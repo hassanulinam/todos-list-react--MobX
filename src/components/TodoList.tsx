@@ -9,7 +9,7 @@ const TodoList = () => {
     <div className="todo-list-container">
       {store.todos.length === 0 ? (
         <div className="no-todos-container">
-          <p>No todos added.</p>
+          <p>Get started by adding a Todo</p>
         </div>
       ) : (
         <>
