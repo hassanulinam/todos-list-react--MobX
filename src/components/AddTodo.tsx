@@ -2,12 +2,6 @@ import { runInAction } from "mobx";
 import { observer } from "mobx-react";
 import store from "../store";
 
-const filterConst = {
-  completed: "completed",
-  todo: "pending",
-  all: "all",
-};
-
 const todosDataUrl =
   "https://raw.githubusercontent.com/jherr/todos-four-ways/master/data/todos.json";
 

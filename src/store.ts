@@ -1,4 +1,4 @@
-import { autorun, makeAutoObservable, runInAction } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 
 // ========================================================
 
@@ -41,7 +41,7 @@ class Store {
 
   addTodo() {
     if (this.newTodo.trim() !== "")
-      this.todos.unshift(new Todo(++this.n, this.newTodo));
+      this.todos.push(new Todo(++this.n, this.newTodo));
     this.newTodo = "";
   }
 
@@ -70,33 +70,15 @@ class Store {
     this.loadedSampleData = false;
   }
 
-  get completedList() {
-    return this.todos.filter((t) => t.done);
-  }
-
-  get pendingList() {
-    return this.todos.filter((t) => !t.done);
-  }
-
   get filteredTodoList() {
-    if (this.activeFilter === filterConst.completed) return this.completedList;
-    if (this.activeFilter === filterConst.pending) return this.pendingList;
+    if (this.activeFilter === filterConst.completed)
+      return this.todos.filter((t) => t.done);
+    if (this.activeFilter === filterConst.pending)
+      return this.todos.filter((t) => !t.done);
     return this.todos;
   }
 }
 
 const store = new Store();
-
-export const unsubscribdFilteredList = autorun(() => {
-  console.log("filering todos...", store.filteredTodoList);
-});
-
-export const unsubscribeCompletedList = autorun(() => {
-  console.log("watching completed list...", store.completedList);
-});
-
-export const unsubscribePendingList = autorun(() => {
-  console.log("watching pending list...", store.pendingList);
-});
 
 export default store;
